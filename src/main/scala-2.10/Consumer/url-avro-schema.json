@@ -1,0 +1,24 @@
+{
+  "type": "record",
+  "name": "webdataaggevent",
+  "fields": [
+    { "name": "imsi", "type": "string" },
+    { "name": "msisdn", "type": "string" },
+    { "name": "imei", "type": "string" },
+    { "name": "lac", "type": "long" },
+    { "name": "cellid", "type": "long" },
+    { "name": "mcc", "type": "int" },
+    { "name": "mnc", "type": "int" },
+    { "name": "locationType", "type": "int" },
+    { "name": "startTime", "type": "long" },
+    { "name": "endTime", "type": "long" },
+    { "name": "aggregationEventCount", "type": "long" },
+    { "name": "targetIp", "type": "string" },
+    { "name": "targetPort", "type": "int" },
+    { "name": "cookies", "type": "string" },
+    { "name": "host", "type": "string" },
+    { "name": "path", "type": "string" },
+    { "name": "downloadKb", "type": "long" },
+    { "name": "uploadKb", "type": "long" }
+  ]
+}
