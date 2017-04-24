@@ -11,12 +11,16 @@ import org.apache.avro.generic.{GenericData, GenericRecord}
 import org.apache.avro.io.{BinaryEncoder, DatumReader, DecoderFactory, EncoderFactory}
 import org.apache.avro.specific.{SpecificDatumReader, SpecificDatumWriter}
 
+import scala.util.Random
+
 
 class AvroInitialization(
-                          val filePath: String
-                        ) {
+                          val filePath: String) {
 
   private val avroSchema: Schema = getSchema
+  private val setOfUniqueHosts: Set[String] =
+    Set("yandex.ru", "vk.com", "telegram.ru", "google.com", "8.8.8.8", "1.1.1.1")
+  private val randVal: Random = new Random()
 
   private def getSchema: Schema = {
     val fileAvro: File = new File(filePath)
@@ -34,6 +38,36 @@ class AvroInitialization(
       case ex: Exception => ex.printStackTrace()
       null
     }
+  }
+
+  def generateAvroSingleRecord(): Array[Byte] = {
+    val binaryWriter = new SpecificDatumWriter[GenericRecord](avroSchema)
+    val out = new ByteArrayOutputStream()
+    val binaryEncoder: BinaryEncoder = EncoderFactory.get().binaryEncoder(out, null)
+      val tempRecord: GenericRecord = new GenericData.Record(avroSchema)
+      tempRecord.put("imsi", "imsi_test")
+      tempRecord.put("msisdn", "msisdn_test")
+      tempRecord.put("imei", "imei_test")
+      tempRecord.put("lac", "1488".toLong)
+      tempRecord.put("cellid", "1488".toLong)
+      tempRecord.put("mcc", "1488".toInt)
+      tempRecord.put("mnc", "1488".toInt)
+      tempRecord.put("locationType", "1488".toInt)
+      tempRecord.put("startTime", "1488".toLong)
+      tempRecord.put("endTime", "1488".toLong)
+      tempRecord.put("aggregationEventCount", "1488".toLong)
+      tempRecord.put("targetIp", "imsi_test")
+      tempRecord.put("targetPort", "1488".toInt)
+      tempRecord.put("cookies", "imsi_test")
+      tempRecord.put("host", setOfUniqueHosts.toVector(randVal.nextInt(setOfUniqueHosts.size)))
+      tempRecord.put("path", setOfUniqueHosts.toVector(randVal.nextInt(setOfUniqueHosts.size)))
+      tempRecord.put("downloadKb", "1488".toLong)
+      tempRecord.put("uploadKb", "1488".toLong)
+      binaryWriter.write(tempRecord, binaryEncoder)
+    binaryEncoder.flush()
+    out.close()
+    val result: Array[Byte] = out.toByteArray
+    result
   }
 
   def generateAvroRandomRecords(amountOfRecords: Long): Array[Byte] = {
@@ -64,7 +98,8 @@ class AvroInitialization(
     }
     binaryEncoder.flush()
     out.close()
-    out.toByteArray
+    val result: Array[Byte] = out.toByteArray()
+    result
   }
 
 }
