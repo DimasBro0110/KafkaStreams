@@ -1,6 +1,5 @@
 package Consumer
 
-import java.util.concurrent.Executors
 import java.util.{Collections, Properties}
 
 import Avro.AvroInitialization
@@ -22,8 +21,6 @@ class ConsumerScala(val brokers: String,
   private val consumer = new KafkaConsumer[String, Array[Byte]](props)
   private var flagRun: Boolean = true
 
-  consumer.subscribe(Collections.singletonList(topic))
-
   private def buildConsumerConfig(brokers: String, groupId: String): Properties = {
     val consumerProperties = new Properties()
     consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokers)
@@ -44,10 +41,12 @@ class ConsumerScala(val brokers: String,
   }
 
   def runConsumer() = {
+    consumer.subscribe(Collections.singletonList(topic))
     println("runConsumer started!!!")
     while(flagRun){
       val inputRecords = consumer.poll(100)
       for(curRecord <- inputRecords){
+        println("MESSAGE: ")
         val curKey: String = curRecord.key()
         val genericRecordFromIncomingStream: GenericRecord = recordDecoder.decodeByteFlow(curRecord.value())
         if(genericRecordFromIncomingStream != null) {
